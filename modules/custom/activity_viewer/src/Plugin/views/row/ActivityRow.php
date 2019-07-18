@@ -41,24 +41,28 @@ class ActivityRow extends EntityRow {
           $parent_id = $comment->get('entity_id')->target_id;
           $parent_type = $comment->get('entity_type')->value;
 
-          if (!empty($parent_id) && !empty($parent_type) && $parent_type === "post") {
-            $parent_storage = \Drupal::entityTypeManager()->getStorage($parent_type);
-            $parent_entity = $parent_storage->load($parent_id);
-            $current_user_id = \Drupal::currentUser()->id();
-            $current_user = User::load($current_user_id);
+          if (!empty($parent_id) && !empty($parent_type)) {
+            if ($parent_type === "post") {
+              $parent_storage = \Drupal::entityTypeManager()->getStorage($parent_type);
+              $parent_entity = $parent_storage->load($parent_id);
+              $current_user_id = \Drupal::currentUser()->id();
+              $current_user = User::load($current_user_id);
 
-            $parent_status = $parent_entity->get('status')->value;
-            $parent_user_id = $parent_entity->get('user_id')->value;
-            $current_user_is_admin = $current_user->hasPermission('view unpublished post entities');
+              $parent_status = $parent_entity->get('status')->value;
+              $current_user_is_admin = $current_user->hasPermission('view unpublished post entities');
 
-            if ((!empty($parent_status) && $parent_status !== "0")
-              || $current_user_is_admin ) {
+              if ((!empty($parent_status) && $parent_status !== "0")
+                || $current_user_is_admin) {
+                $render_result[] = $row;
+              }
+            }
+            else {
               $render_result[] = $row;
             }
           }
         }
         else {
-           $render_result[] = $row;
+          $render_result[] = $row;
         }
 
         foreach ($entity->field_activity_destinations as $destination) {
