@@ -33,6 +33,7 @@ class ActivityRow extends EntityRow {
         $render_result = [];
         $entity = $row->_entity;
         $target_type = $entity->get('field_activity_entity')->target_type;
+        $render_entity = TRUE;
 
         if (!empty($target_type) && $target_type === "comment") {
           $comment_id = $entity->get('field_activity_entity')->target_id;
@@ -51,17 +52,14 @@ class ActivityRow extends EntityRow {
               $parent_status = $parent_entity->get('status')->value;
               $current_user_is_admin = $current_user->hasPermission('view unpublished post entities');
 
-              if ((!empty($parent_status) && $parent_status !== "0")
-                || $current_user_is_admin) {
-                $render_result[] = $row;
+              if ((empty($parent_status) || $parent_status === "0") && !$current_user_is_admin) {
+                $render_entity = FALSE;
               }
-            }
-            else {
-              $render_result[] = $row;
             }
           }
         }
-        else {
+
+        if ($render_entity) {
           $render_result[] = $row;
         }
 
