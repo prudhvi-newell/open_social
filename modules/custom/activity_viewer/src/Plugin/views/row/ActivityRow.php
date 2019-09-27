@@ -3,7 +3,6 @@
 namespace Drupal\activity_viewer\Plugin\views\row;
 
 use Drupal\views\Plugin\views\row\EntityRow;
-use Drupal\user\Entity\User;
 
 /**
  * Plugin which performs a activity_view on the resulting object.
