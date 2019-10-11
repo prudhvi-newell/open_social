@@ -30,33 +30,8 @@ class ActivityRow extends EntityRow {
 
       foreach ($result as $row) {
         $render_result = [];
+        $render_result[] = $row;
         $entity = $row->_entity;
-        $target_type = $entity->get('field_activity_entity')->target_type;
-        $render_entity = TRUE;
-
-        if (!empty($target_type) && $target_type === "comment") {
-          $comment_id = $entity->get('field_activity_entity')->target_id;
-          $comment_storage = \Drupal::entityTypeManager()->getStorage('comment');
-          $comment = $comment_storage->load($comment_id);
-          $parent_id = $comment->get('entity_id')->target_id;
-          $parent_type = $comment->get('entity_type')->value;
-
-          if (!empty($parent_id) && !empty($parent_type) && $parent_type === "post") {
-            $parent_storage = \Drupal::entityTypeManager()->getStorage($parent_type);
-            $parent_entity = $parent_storage->load($parent_id);
-            $current_user = \Drupal::currentUser()->getAccount();
-            $parent_status = $parent_entity->get('status')->value;
-            $current_user_is_admin = $current_user->hasPermission('view unpublished post entities');
-
-            if ((empty($parent_status) || $parent_status === "0") && !$current_user_is_admin) {
-              $render_entity = FALSE;
-            }
-          }
-        }
-
-        if ($render_entity) {
-          $render_result[] = $row;
-        }
 
         foreach ($entity->field_activity_destinations as $destination) {
           /* @var $plugin \Drupal\activity_creator\Plugin\ActivityDestinationBase */
