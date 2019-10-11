@@ -49,8 +49,6 @@ class ActivityPostVisibilityAccess extends FilterPluginBase {
     $this->query->addTable('activity__field_activity_recipient_group');
     $this->query->addTable('activity__field_activity_entity');
 
-//    $this->query->addField('comment_field_data', 'entity_id', 'comment_field_data.entity_id');
-
     $configuration = [
       'left_table' => 'activity__field_activity_entity',
       'left_field' => 'field_activity_entity_target_id',
