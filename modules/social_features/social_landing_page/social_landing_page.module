@@ -167,22 +167,23 @@ function social_landing_page_preprocess_node(&$variables) {
         ];
       }
     }
-    // Get current user.
-    $account = \Drupal::currentUser();
 
-    // Add node edit url for management.
-    if ($node instanceof NodeInterface) {
-      // Get the current route name to check if the user is on the
-      // edit or delete page.
-      $route = \Drupal::routeMatch()->getRouteName();
-      if (!in_array($route, [
-        'entity.node.edit_form',
-        'entity.node.delete_form',
-      ])) {
-        if ($node->access('update', $account)) {
-          $variables['node_edit_url'] = $node->toUrl('edit-form')->toString();
-        }
-      }
+    // Only existing nodes can be edited. Nodes in preview mode aren't editable.
+    if ($node->id() !== NULL) {
+      // TODO #3096639: Replace node_edit_url with content.links.edit.
+      $variables['node_edit_url'] = [
+        '#type' => 'link',
+        '#title' => [
+          '#markup' => '<svg class="icon-gray icon-medium"><use xlink:href="#icon-edit"></use></svg>',
+          '#allowed_tags' => ['use', 'svg'],
+        ],
+        '#options' => [
+          'attributes' => [
+            'title' => new TranslatableMarkup('Edit content'),
+            'class' => 'waves-effect waves-light btn btn-raised btn-default btn-floating',
+          ],
+        ],
+      ] + $node->toUrl('edit-form')->toRenderArray();
     }
   }
 }
