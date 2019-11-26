@@ -188,7 +188,7 @@ class Node extends PreprocessBase {
     $variables['no_image'] = TRUE;
     $image_field = "field_{$node->getType()}_image";
 
-    if (!empty($node->{$image_field}->entity)) {
+    if (!$node->get($image_field)->isEmpty()) {
       $variables['no_image'] = FALSE;
     }
     else {
@@ -219,16 +219,6 @@ class Node extends PreprocessBase {
       );
       unset($variables['content']['links']['#lazy_builder']);
     }
-
-    // A landing page has a different way of determining this.
-    if ($node->getType() === 'landing_page') {
-      $variables['no_image'] = FALSE;
-      $image = _social_landing_page_get_hero_image($node);
-      if (empty($image)) {
-        $variables['no_image'] = TRUE;
-      }
-    }
-
   }
 
 }
